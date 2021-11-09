@@ -1,37 +1,93 @@
-import logo from './logo.svg';
+// import logo from './logo.svg';
 import './App.css';
+import React, { useState } from "react"
+import Alert from './components/Alert.js'
+import About from './components/About';
+import Navbar from './components/Navbar.js'
+import TextForm from './components/TextForm.js'
+import {
+  BrowserRouter as Router,
+  Route,
+  Routes,
+  Link,
+  Switch
+} from 'react-router-dom';
 
-let username = 'Hrishi'
+
 function App() {
+
+
+  const [mode, setMode] = useState('light')
+
+  const toggleMode = () => {
+    if (mode === 'light') {
+      setMode('dark');
+      document.body.style.backgroundColor = '#212520';
+      document.getElementById('nav').style.borderBottom = '1px solid white'
+      showAlert('Dark Mode has been enabled...', 'success')
+
+    }
+    else {
+      setMode('light');
+      document.body.style.backgroundColor = 'white';
+      document.getElementById('nav').style.borderBottom = '1px solid #212520';
+      showAlert('Light Mode has been enabled...', 'success')
+
+    }
+  }
+  /*--------------------------------------------------------------------*/
+  const [theme, setTheme] = useState('default')
+
+  const showtheme = (theme) => {
+    if (theme === 'Primary') {
+      setTheme('primary');
+      document.body.style.backgroundColor = '#0d6efd';
+    }
+    else if (theme === 'Success') {
+      setTheme('Success');
+      document.body.style.backgroundColor = '#0d6efd';
+    }
+    else if (theme === 'Energetic') {
+      setTheme('Danger');
+      document.body.style.backgroundColor = '#0d6efd';
+    }
+    else if (theme === 'Default') {
+      setTheme('Default');
+      document.body.style.backgroundColor = '#212520';
+      document.getElementById('nav').style.borderBottom = '1px solid white'
+      showAlert('Dark Mode has been enabled...', 'success')
+    }
+  }
+  /*--------------------------------------------------------------------*/
+  const [alert, setAlert] = useState(null)
+
+  const showAlert = (message, type) => {
+    setAlert({
+      msg: message,
+      type: type
+    })
+    setTimeout(() => {
+      setAlert(null)
+    }, 1500);
+
+  }
+  /*-------------------------------------------------------------------*/
   return (
     <>
-    <nav className="navbar navbar-expand-lg navbar-light bg-light shadow">
-  <div className="container-fluid">
-    <a className="navbar-brand" href="/">TextUtils</a>
-    <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarSupportedContent" aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">
-      <span className="navbar-toggler-icon"></span>
-    </button>
-    <div className="collapse navbar-collapse" id="navbarSupportedContent">
-      <ul className="navbar-nav me-auto mb-2 mb-lg-0">
-        <li className="nav-item">
-          <a className="nav-link active" aria-current="page" href="/">Home</a>
-        </li>
-        <li className="nav-item">
-          <a className="nav-link active" href="/">About</a>
-        </li>
-        <li className="nav-item">
-          <a className="nav-link active" href="/">Contact</a>
-        </li>
-      </ul>
-      <form className="d-flex">
-        <input className="form-control me-2" type="search" placeholder="Search" aria-label="Search"/>
-        <button className="btn btn-outline-success" type="submit">Search</button>
-      </form>
-    </div>
-  </div>
-</nav>
+      <Router>
+        <div className="container-fluid mx-0 px-0 py-0 my-0">
+          <Navbar title="TextUtils" home='Home' about="About Us" contact="Contact Us" mode={mode} toggleMode={toggleMode} theme={theme} showtheme={showtheme} />
+          <Alert alert={alert} />
+          <h3 className="text-center mt-1 alert alert-warning py-2 mt-3 mx-3">Welcome To TextUtils</h3>
+          <Routes>
+            <Route path='/' element={<TextForm showAlert={showAlert} showtheme={showtheme} theme={theme} heading='Enter the text to analyze below' mode={mode} />}></Route>
+            <Route path='/about' element={<About mode={mode} />}></Route>
+
+          </Routes>
+
+        </div>
+      </Router>
     </>
-   
   );
 }
 
